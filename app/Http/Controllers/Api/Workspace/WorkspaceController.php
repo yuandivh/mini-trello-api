@@ -13,7 +13,7 @@ class WorkspaceController extends Controller
     //
     public function index(Request $request)
     {
-        $workspace = $request->user()->workspaces()->get();
+        $workspace = $request->user()->workspaces()->with('boards')->get();
         return response()->json([
             'status'=>'success',
             'data'=>$workspace
@@ -22,7 +22,7 @@ class WorkspaceController extends Controller
 
     public function show(Request $request, $workspace_id)
     {
-        $workspace = $request->user()->workspaces()->find($workspace_id);
+        $workspace = $request->user()->workspaces()->with('boards')->find($workspace_id);
         if(!$workspace){
             return response()->json([
                 'status'=>'error',
