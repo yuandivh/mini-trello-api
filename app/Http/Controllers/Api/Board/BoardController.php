@@ -31,10 +31,11 @@ class BoardController extends Controller
 
     public function show (Request $request, $board_id)
     {
-        $board = Board::where('id',$board_id)
-        ->whereHas('workspace',function ($query) use ($request){
-            $query->where('user_id',$request->user()->id);
-        })->first();
+        // $board = Board::where('id',$board_id)
+        // ->whereHas('workspace',function ($query) use ($request){
+        //     $query->where('user_id',$request->user()->id);
+        // })->first();
+        $board = Board::with('workspace')->find($board_id);
 
         if (!$board)
         {
@@ -42,6 +43,9 @@ class BoardController extends Controller
                 'message'=>'Board not found'
             ],404);
         }
+
+        $this->authorize('view',$board);
+
         return response()->json([
             'message'=>'Board retrieved successfully',
             'data'=>$board
@@ -67,10 +71,11 @@ class BoardController extends Controller
 
     public function update(UpdateBoardRequest $request,$board_id)
     {
-        $board = Board::where('id',$board_id)
-        ->whereHas('workspace',function ($query) use ($request){
-            $query->where('user_id',$request->user()->id);
-        })->first();
+        // $board = Board::where('id',$board_id)
+        // ->whereHas('workspace',function ($query) use ($request){
+        //     $query->where('user_id',$request->user()->id);
+        // })->first();
+        $board = Board::with('workspace')->find($board_id);
 
         if(!$board)
         {
@@ -78,9 +83,13 @@ class BoardController extends Controller
                 "message"=>"Board not found"
             ],404);
         }
+
+        $this->authorize('update',$board);
+
         $board->update([
             "name"=>$request->name
         ]);
+
         return response()->json([
             "message"=>"Board updated successfully",
             "data"=>$board
@@ -89,16 +98,21 @@ class BoardController extends Controller
 
     public function destroy(Request $request, $board_id)
     {
-        $board = Board::where('id',$board_id)
-        ->whereHas('workspace',function ($query) use ($request){
-            $query->where('user_id',$request->user()->id);
-        })->first();
+        // $board = Board::where('id',$board_id)
+        // ->whereHas('workspace',function ($query) use ($request){
+        //     $query->where('user_id',$request->user()->id);
+        // })->first();
+
+        $board = Board::find($board_id);
 
         if(!$board){
             return response()->json([
                 "message"=>"Board not found"
             ],404);
         }
+
+        $this->authorize('delete',$board);
+
         $board->delete();
         return response()->json([
             "message"=>"Board deleted successfully"
