@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Workspace\WorkspaceController;
 use App\Http\Controllers\Api\Board\BoardController;
 use App\Http\Controllers\Api\BoardList\BoardListController;
+use App\Http\Controllers\Api\Card\CardController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -37,5 +38,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/boards/{board_id}/lists',[BoardListController::class,'store']);
     Route::put('/lists/{board_list_id}',[BoardListController::class,'update']);
     Route::delete('/lists/{board_list_id}',[BoardListController::class,'destroy']);
+
+    // Card API
+    Route::get('/lists/{board_list_id}/card',[CardController::class,'index']);
+    Route::get('/card/{card_id}',[CardController::class,'show']);
+    Route::post('/lists/{board_list_id}/card',[CardController::class,'store']);
+    Route::put('/card/{card_id}',[CardController::class,'update']);
+    Route::delete('/card/{card_id}',[CardController::class,'destroy']);
 
 });

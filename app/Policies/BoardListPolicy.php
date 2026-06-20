@@ -32,6 +32,10 @@ class BoardListPolicy
         return false;
     }
 
+    public function createCard(User $user, BoardList $boardList){
+        return $boardList->board->workspace->user_id === $user->id ? Response::allow():Response::denyAsNotFound('Board list not found.');
+    }
+
     /**
      * Determine whether the user can update the model.
      */
